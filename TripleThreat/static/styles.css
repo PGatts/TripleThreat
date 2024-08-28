@@ -1,0 +1,35 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+table {
+    border-collapse: collapse;
+    width: 50%;
+    margin: 20px auto;
+}
+
+td, th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+td {
+    width: 33%;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+form {
+    text-align: center;
+}
+
+.X {
+    background-color: red;
+}
+
+.O {
+    background-color: blue;
+}

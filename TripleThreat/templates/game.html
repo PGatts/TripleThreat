@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triple Threat: Basketball Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Triple Threat: Basketball Tic-Tac-Toe</h1>
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                {% for col in game_data['columns'] %}
+                    <th>
+                        <img src= "{{col}}">
+                    </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(3) %}
+                <tr>
+                    <th><img src="{{ game_data['rows'][i] }}"></th>
+                    {% for j in range(3) %}
+                        {% if game_data['answers'][i][j] in ['1','2','3','4','5','6','7','8','9'] %}
+                            <td>{{ game_data['answers'][i][j] }}</td>
+                        {% else %}
+                            <td class="{{ game_data['answers'][i][j][0] }}"><img src="{{ game_data['answers'][i][j][1:] }}"></td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if game_data['winner'] %}
+        <h2>{{ game_data['winner'] }} WINS!</h2>
+        <a href="{{ url_for('game') }}">Play Again</a>
+    {% else %}
+        <form action="#" method="POST">
+            <input type="hidden" name="xturn" value="{{ game_data['xturn'] }}">
+            <input type="hidden" name="answers" value="{{ game_data['answers'] }}">
+            <input type="hidden" name="filled_boxes" value="{{ game_data['filled_boxes'] }}">
+            <input type="hidden" name="columns" value="{{ game_data['columns'] }}">
+            <input type="hidden" name="rows" value="{{ game_data['rows'] }}">
+            <input type="hidden" name="players" value="{{ game_data['players'] }}">
+            <label for="box">Choose a box (1-9):</label>
+            <input type="number" name="box" id="box" min="1" max="9" required>
+            <label for="player">Player Name:</label>
+            <input type="text" name="player" id="player" required>
+            <button type="submit">Submit</button>
+        </form>
+    {% endif %}
+
+</body>
+</html>
