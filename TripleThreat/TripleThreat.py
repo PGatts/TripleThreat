@@ -51,6 +51,7 @@ def get_image(player_name):
             else:
                 i = 5
 
+    # Randomly return Tim Duncan or Kobe Bryant if the player is missing their headshot
     return "https://www.basketball-reference.com/req/202106291/images/headshots/duncati01.jpg" if (random.randint(0,1) == 0) else "https://www.basketball-reference.com/req/202106291/images/headshots/bryanko01.jpg"
 # Generates 6 random, non-repeating teams from list of NBA teams
 def generate_teams():
