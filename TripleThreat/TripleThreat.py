@@ -45,9 +45,13 @@ def get_image(player_name):
                 i += 1
                 continue
             picture = soup.find('img', attrs={'itemscope':'image'})
-            image_link = picture['src']
-            return image_link
+            if picture is not None:
+                image_link = picture['src']
+                return image_link
+            else:
+                i = 5
 
+    return "https://www.basketball-reference.com/req/202106291/images/headshots/duncati01.jpg" if (random.randint(0,1) == 0) else "https://www.basketball-reference.com/req/202106291/images/headshots/bryanko01.jpg"
 # Generates 6 random, non-repeating teams from list of NBA teams
 def generate_teams():
     """Returns a list of image addresses for 6 unique teams' logos"""
