@@ -5,17 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Triple Threat: Basketball Tic-Tac-Toe</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-
+    <script>
+        let selectedBox = null;
+        function openModal(boxNum) {
+            selectedBox = boxNum;
+            document.getElementById('modal').style.display = 'flex';
+            document.getElementById('modal-box').value = boxNum;
+            document.getElementById('modal-player').value = '';
+            document.getElementById('modal-player').focus();
+            document.getElementById('modal-box-message').textContent = `Guess for Box #${boxNum}`;
+        }
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            selectedBox = null;
+        }
+    </script>
 </head>
 <body>
     <h1>Triple Threat: Basketball Tic-Tac-Toe</h1>
+    {% if not game_data['winner'] %}
+        <div class="turn-indicator">
+            {% if game_data['xturn'] == True or game_data['xturn'] == 'True' %}
+                <span class="turn-indicator-red">Red's Turn</span>
+            {% else %}
+                <span class="turn-indicator-blue">Blue's Turn</span>
+            {% endif %}
+        </div>
+    {% endif %}
     <table>
         <thead>
             <tr>
-                <th></th>
+                <th><img src="{{ url_for('static', filename='images/TripleThreatLogo.png') }}"></th>
                 {% for col in game_data['columns'] %}
                     <th>
-                        <img src= "{{col}}">
+                        <img src="{{col}}">
                     </th>
                 {% endfor %}
             </tr>
@@ -23,10 +46,11 @@
         <tbody>
             {% for i in range(3) %}
                 <tr>
-                    <th><img src="{{ game_data['rows'][i] }}"></th>
+                    <th><img src="{{game_data['rows'][i]}}"></th>
                     {% for j in range(3) %}
+                        {% set box_num = i*3 + j + 1 %}
                         {% if game_data['answers'][i][j] in ['1','2','3','4','5','6','7','8','9'] %}
-                            <td>{{ game_data['answers'][i][j] }}</td>
+                            <td style="cursor:pointer;" onclick="openModal({{ box_num }})">{{ game_data['answers'][i][j] }}</td>
                         {% else %}
                             <td class="{{ game_data['answers'][i][j][0] }}"><img src="{{ game_data['answers'][i][j][1:] }}"></td>
                         {% endif %}
@@ -36,26 +60,38 @@
         </tbody>
     </table>
 
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div id="modal-box-message" style="font-weight:bold; margin-bottom:10px;"></div>
+            <form action="{{ url_for('game') }}" method="POST">
+                <input type="hidden" name="xturn" value="{{ game_data['xturn'] }}">
+                <input type="hidden" name="answers" value="{{ game_data['answers'] }}">
+                <input type="hidden" name="filled_boxes" value="{{ game_data['filled_boxes'] }}">
+                <input type="hidden" name="columns" value="{{ game_data['columns'] }}">
+                <input type="hidden" name="rows" value="{{ game_data['rows'] }}">
+                <input type="hidden" name="players" value="{{ game_data['players'] }}">
+                <input type="hidden" name="box" id="modal-box" value="{{ selectedBox }}">
+                <label for="modal-player">Player Name:</label>
+                <input type="text" name="player" id="modal-player" required>
+                <div class="modal-buttons">
+                    <button type="submit">Submit</button>
+                    <button type="button" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     {% if game_data['winner'] %}
-        <h2>{{ game_data['winner'] }} WINS!</h2>
-        <form action="{{ url_for('game') }}" method="GET">
-            <button type="submit">Play Again!</button>
-        </form>
-    {% else %}
-        <form action="#" method="POST">
-            <input type="hidden" name="xturn" value="{{ game_data['xturn'] }}">
-            <input type="hidden" name="answers" value="{{ game_data['answers'] }}">
-            <input type="hidden" name="filled_boxes" value="{{ game_data['filled_boxes'] }}">
-            <input type="hidden" name="columns" value="{{ game_data['columns'] }}">
-            <input type="hidden" name="rows" value="{{ game_data['rows'] }}">
-            <input type="hidden" name="players" value="{{ game_data['players'] }}">
-            <label for="box">Choose a box (1-9):</label>
-            <input type="number" name="box" id="box" min="1" max="9" required>
-            <label for="player">Player Name:</label>
-            <input type="text" name="player" id="player" required>
-            <button type="submit">Submit</button>
-        </form>
+        {% if game_data['winner'] == 'Draw' %}
+            <h2>Draw!</h2>
+        {% else %}
+            <h2>{{ game_data['winner'] }} WINS!</h2>
+        {% endif %}
     {% endif %}
+
+    <form action="{{ url_for('game') }}" method="GET" style="text-align:center; margin-top: 20px; margin-bottom: 32px;">
+        <button type="submit" name="new_teams" value="1" style="background:#ed174c; color:#fff; font-weight:bold; padding:12px 28px; border-radius:8px; font-size:1.1em;">Start Over with New Teams</button>
+    </form>
 
 </body>
 </html>
